@@ -9,6 +9,7 @@ onready var sprite: Sprite = get_node("Sprite")
 
 var can_atack: bool = false
 var can_died: bool = false
+var can_hit: bool = false
 var velocity: Vector2
 
 export(int) var spped
@@ -34,7 +35,9 @@ func move() -> void:
 	velocity = move_and_slide(velocity)
 
 func animate() -> void:
-	if can_died:
+	if can_hit:
+		animation.play("hit")
+	elif can_died:
 		animation.play("dead")
 		set_physics_process(false)
 	elif can_atack:
@@ -68,7 +71,8 @@ func hit() -> void:
 	urr.play()
 	if Global.hp_player == 0:
 		can_died = true
-		Global.hp_player=3
+	else:
+		can_hit = true
 	
 func _on_Animation_animation_finished(anim_name):
 	if anim_name == "dead":
@@ -76,3 +80,5 @@ func _on_Animation_animation_finished(anim_name):
 	elif anim_name == "attack":
 		set_physics_process(true)
 		can_atack = false
+	elif anim_name == "hit":
+		can_hit=false
